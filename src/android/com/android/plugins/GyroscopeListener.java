@@ -177,7 +177,8 @@ public class GyroscopeListener extends CordovaPlugin implements SensorEventListe
     private void stop() {
         stopTimeout();
         if (this.status != GyroscopeListener.STOPPED) {
-            this.sensorManager.unregisterListener(this);
+            this.sensorManager.unregisterListener(this, this.mSensor);
+            this.sensorManager.unregisterListener(this, this.mSensor_uc);
         }
         this.setStatus(GyroscopeListener.STOPPED);
         this.accuracy = SensorManager.SENSOR_STATUS_UNRELIABLE;
