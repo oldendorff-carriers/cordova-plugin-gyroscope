@@ -43,6 +43,7 @@ public class GyroscopeListener extends CordovaPlugin implements SensorEventListe
 
     private SensorManager sensorManager;  // Sensor manager
     private Sensor mSensor;  // Orientation sensor returned by sensor manager
+    private Sensor mSensor_uc;  // Orientation sensor returned by sensor manager
 
     private CallbackContext callbackContext;  // Keeps track of the JS callback context.
 
@@ -135,6 +136,7 @@ public class GyroscopeListener extends CordovaPlugin implements SensorEventListe
 
         // Get gyroscope from sensor manager
         List<Sensor> list = this.sensorManager.getSensorList(Sensor.TYPE_GYROSCOPE);
+        List<Sensor> list_uc = this.sensorManager.getSensorList(Sensor.TYPE_GYROSCOPE_UNCALIBRATED);
 
         // If found, then register as listener
         if ((list != null) && (list.size() > 0)) {
@@ -145,6 +147,16 @@ public class GyroscopeListener extends CordovaPlugin implements SensorEventListe
           this.setStatus(GyroscopeListener.ERROR_FAILED_TO_START);
           this.fail(GyroscopeListener.ERROR_FAILED_TO_START, "No sensors found to register gyroscope listening to.");
           return this.status;
+        }
+
+        if ((list_uc != null) && (list_uc.size() > 0)) {
+            this.mSensor_uc = list_uc.get(0);
+            this.sensorManager.registerListener(this, this.mSensor_uc, SensorManager.SENSOR_DELAY_UI);
+            this.setStatus(GyroscopeListener.STARTING);
+        } else {
+            this.setStatus(GyroscopeListener.ERROR_FAILED_TO_START);
+            this.fail(GyroscopeListener.ERROR_FAILED_TO_START, "No sensors found to register gyroscope listening to.");
+            return this.status;
         }
 
         // Set a timeout callback on the main thread.
@@ -227,8 +239,7 @@ public class GyroscopeListener extends CordovaPlugin implements SensorEventListe
                 this.x = event.values[0];
                 this.y = event.values[1];
                 this.z = event.values[2];
-            }
-            if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE_UNCALIBRATED) {
+            } else if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE_UNCALIBRATED) {
                 this.x_uc = event.values[0];
                 this.y_uc = event.values[1];
                 this.z_uc = event.values[2];
