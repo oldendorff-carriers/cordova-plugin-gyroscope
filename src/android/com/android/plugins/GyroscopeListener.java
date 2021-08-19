@@ -143,20 +143,15 @@ public class GyroscopeListener extends CordovaPlugin implements SensorEventListe
           this.mSensor = list.get(0);
           this.sensorManager.registerListener(this, this.mSensor, SensorManager.SENSOR_DELAY_UI);
           this.setStatus(GyroscopeListener.STARTING);
+
+          if ((list_uc != null) && (list_uc.size() > 0)) {
+            this.mSensor_uc = list_uc.get(0);
+            this.sensorManager.registerListener(this, this.mSensor_uc, SensorManager.SENSOR_DELAY_UI);
+          }
         } else {
           this.setStatus(GyroscopeListener.ERROR_FAILED_TO_START);
           this.fail(GyroscopeListener.ERROR_FAILED_TO_START, "No sensors found to register gyroscope listening to.");
           return this.status;
-        }
-
-        if ((list_uc != null) && (list_uc.size() > 0)) {
-            this.mSensor_uc = list_uc.get(0);
-            this.sensorManager.registerListener(this, this.mSensor_uc, SensorManager.SENSOR_DELAY_UI);
-            this.setStatus(GyroscopeListener.STARTING);
-        } else {
-            this.setStatus(GyroscopeListener.ERROR_FAILED_TO_START);
-            this.fail(GyroscopeListener.ERROR_FAILED_TO_START, "No sensors found to register gyroscope listening to.");
-            return this.status;
         }
 
         // Set a timeout callback on the main thread.
@@ -177,8 +172,12 @@ public class GyroscopeListener extends CordovaPlugin implements SensorEventListe
     private void stop() {
         stopTimeout();
         if (this.status != GyroscopeListener.STOPPED) {
-            this.sensorManager.unregisterListener(this, this.mSensor);
-            this.sensorManager.unregisterListener(this, this.mSensor_uc);
+            if (this.mSensor!=null) {
+                this.sensorManager.unregisterListener(this, this.mSensor);
+            }
+            if (this.mSensor_uc!=null) {
+                this.sensorManager.unregisterListener(this, this.mSensor_uc);
+            }
         }
         this.setStatus(GyroscopeListener.STOPPED);
         this.accuracy = SensorManager.SENSOR_STATUS_UNRELIABLE;
@@ -309,6 +308,7 @@ public class GyroscopeListener extends CordovaPlugin implements SensorEventListe
             r.put("x_uc", this.x_uc);
             r.put("y_uc", this.y_uc);
             r.put("z_uc", this.z_uc);
+
             r.put("timestamp", this.timestamp);
         } catch (JSONException e) {
             e.printStackTrace();
