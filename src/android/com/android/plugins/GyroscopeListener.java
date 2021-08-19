@@ -36,6 +36,7 @@ public class GyroscopeListener extends CordovaPlugin implements SensorEventListe
     public static int ERROR_FAILED_TO_START = 3;
 
     private float x, y, z;  // most recent speed values
+    private float x_uc, y_uc, z_uc; // most recent speed values uncalibrated
     private long timestamp;  // time of most recent value
     private int status;  // status of listener
     private int accuracy = SensorManager.SENSOR_STATUS_UNRELIABLE;
@@ -208,7 +209,7 @@ public class GyroscopeListener extends CordovaPlugin implements SensorEventListe
      */
     public void onSensorChanged(SensorEvent event) {
         // Only look at gyroscope events
-        if (event.sensor.getType() != Sensor.TYPE_GYROSCOPE) {
+        if (event.sensor.getType() != Sensor.TYPE_GYROSCOPE && event.sensor.getType() != Sensor.TYPE_GYROSCOPE_UNCALIBRATED) {
             return;
         }
 
@@ -222,9 +223,16 @@ public class GyroscopeListener extends CordovaPlugin implements SensorEventListe
 
             // Save time that event was received
             this.timestamp = System.currentTimeMillis();
-            this.x = event.values[0];
-            this.y = event.values[1];
-            this.z = event.values[2];
+            if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+                this.x = event.values[0];
+                this.y = event.values[1];
+                this.z = event.values[2];
+            }
+            if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE_UNCALIBRATED) {
+                this.x_uc = event.values[0];
+                this.y_uc = event.values[1];
+                this.z_uc = event.values[2];
+            }
 
             this.win();
         }
@@ -286,6 +294,9 @@ public class GyroscopeListener extends CordovaPlugin implements SensorEventListe
             r.put("x", this.x);
             r.put("y", this.y);
             r.put("z", this.z);
+            r.put("x_uc", this.x_uc);
+            r.put("y_uc", this.y_uc);
+            r.put("z_uc", this.z_uc);
             r.put("timestamp", this.timestamp);
         } catch (JSONException e) {
             e.printStackTrace();
