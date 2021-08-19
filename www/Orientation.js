@@ -2,10 +2,13 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-var Orientation = function(x, y, z, timestamp) {
+var Orientation = function(x, y, z, x_uc, y_uc, z_uc, timestamp) {
     this.x = x;
     this.y = y;
     this.z = z;
+    this.x_uc = x_uc;
+    this.y_uc = y_uc;
+    this.z_uc = z_uc;
     this.timestamp = timestamp || (new Date()).getTime();
 };
 
