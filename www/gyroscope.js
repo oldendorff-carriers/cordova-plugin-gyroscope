@@ -28,7 +28,7 @@ var speed = null;
 function start() {
     exec(function(a) {
         var tempListeners = listeners.slice(0);
-        speed = new Orientation(a.x, a.y, a.z, a.x_uc, a.y_uc, a.z_uc, a.timestamp);
+        speed = new Orientation(a.x, a.y, a.z, a.x_uc, a.y_uc, a.z_uc, a.x_ucd, a.y_ucd, a.z_ucd, a.timestamp);
         for (var i = 0, l = tempListeners.length; i < l; i++) {
             tempListeners[i].win(speed);
         }

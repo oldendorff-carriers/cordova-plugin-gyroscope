@@ -36,7 +36,7 @@ public class GyroscopeListener extends CordovaPlugin implements SensorEventListe
     public static int ERROR_FAILED_TO_START = 3;
 
     private float x, y, z;  // most recent speed values
-    private float x_uc, y_uc, z_uc; // most recent speed values uncalibrated
+    private float x_uc, y_uc, z_uc, x_ucd, y_ucd, z_ucd; // most recent speed values uncalibrated
     private long timestamp;  // time of most recent value
     private int status;  // status of listener
     private int accuracy = SensorManager.SENSOR_STATUS_UNRELIABLE;
@@ -243,6 +243,9 @@ public class GyroscopeListener extends CordovaPlugin implements SensorEventListe
                 this.x_uc = event.values[0];
                 this.y_uc = event.values[1];
                 this.z_uc = event.values[2];
+                this.x_ucd = event.values[3];
+                this.y_ucd = event.values[4];
+                this.z_ucd = event.values[5];
             }
 
             this.win();
@@ -308,6 +311,9 @@ public class GyroscopeListener extends CordovaPlugin implements SensorEventListe
             r.put("x_uc", this.x_uc);
             r.put("y_uc", this.y_uc);
             r.put("z_uc", this.z_uc);
+            r.put("x_ucd", this.x_ucd);
+            r.put("y_ucd", this.y_ucd);
+            r.put("z_ucd", this.z_ucd);
 
             r.put("timestamp", this.timestamp);
         } catch (JSONException e) {
